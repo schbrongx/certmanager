@@ -26,6 +26,10 @@ uploads/*
 # Prevent certificates.json from being committed
 certificates.json
 
+# Allow tracking of .gitkeep (or .gitignore) files to keep the folders
+!uploads/.gitkeep
+!db/.gitkeep
+
 # MacOS and Linux system files
 .DS_Store
 Thumbs.db
