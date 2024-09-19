@@ -125,3 +125,7 @@ Feel free to fork this project and submit pull requests! Any feedback, issues, o
 ## License
 
 This project is licensed under the [MIT License](https://opensource.org/licenses/MIT).
+
+## Copyright
+
+© 2024 Thomas Pesendorfer. All rights reserved.
