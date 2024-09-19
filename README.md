@@ -71,6 +71,28 @@ Before you can run the application, make sure you have the following installed:
    ```
     By default, the app will be available at http://127.0.0.1:5000/.
 
+    Keep in mind that the flask development server is not suitable for a production environment. Consider Running
+    Certmanager with gunicorn and ideally place it behind a reverse proxy like Nginx.
+
+    #### Install Gunicorn:
+
+    Gunicorn is a Python WSGI HTTP Server that can serve your Flask app in a production environment:
+    ```bash
+    pip install gunicorn
+    ````
+
+    #### Run Flask  with Gunicorn:
+    You can run your Flask app with Gunicorn using the following command:
+    ````bash
+    gunicorn -w 4 -b 0.0.0.0:8000 app:app
+    ````
+
+    Explanation:
+    * -w 4: This specifies the number of worker processes to handle requests. Adjust based on your server's resources (e.g., 2-4 workers per CPU core).
+    * -b 0.0.0.0:8000: Binds Gunicorn to port 8000. You can adjust this if you prefer a different port.
+    * app:app: This refers to your Flask app object. In this case, app.py contains app = Flask(__name__), so app:app is correct.
+
+
 ### Configuration
 
 * The app uses TinyDB to store certificate metadata.
