@@ -33,3 +33,6 @@ certificates.json
 # MacOS and Linux system files
 .DS_Store
 Thumbs.db
+
+# Helper script for development
+folder_structure.*
