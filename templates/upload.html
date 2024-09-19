@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload New Certificate</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body class="container">
+
+    <h1 class="mt-4">Upload New Certificate</h1>
+
+    <!-- Flash messages for success or errors -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-info mt-3">
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Form for uploading the certificate and key -->
+    <form action="{{ url_for('upload_file') }}" method="POST" enctype="multipart/form-data" class="mt-4">
+        <!-- Title field -->
+        <div class="form-group">
+            <label for="title">Title (defaults to Common Name if left blank):</label>
+            <input type="text" name="title" id="title" class="form-control" placeholder="Enter certificate title">
+        </div>
+
+        <!-- Certificate Type selection -->
+        <div class="form-group">
+            <label for="cert_type">Certificate Type:</label>
+            <select name="cert_type" id="cert_type" class="form-control">
+                {% for type in cert_types %}
+                <option value="{{ type }}">{{ type }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Parent Certificate selection (optional) -->
+        <div class="form-group">
+            <label for="parent_cert_id">Parent Certificate (optional):</label>
+            <select name="parent_cert_id" id="parent_cert_id" class="form-control">
+                <option value="">None</option>
+                {% for cert in parent_certs %}
+                <option value="{{ cert.doc_id }}">{{ cert.title }} ({{ cert.type }})</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Certificate file upload -->
+        <div class="form-group">
+            <label for="certificate">SSL Certificate (CRT/Pem):</label>
+            <input type="file" name="certificate" id="certificate" class="form-control-file">
+        </div>
+
+        <!-- Private Key file upload -->
+        <div class="form-group">
+            <label for="private_key">Private Key (KEY):</label>
+            <input type="file" name="private_key" id="private_key" class="form-control-file">
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-success">Upload</button>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Cancel</a>
+    </form>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

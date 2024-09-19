@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SSL Certificate Manager</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Your custom stylesheet -->
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+<body class="container">
+
+    <h1 class="mt-4">SSL Certificate Manager</h1>
+
+    <!-- New Certificate Button -->
+    <div class="my-4">
+        <a href="{{ url_for('upload_file') }}" class="btn btn-success">New Certificate</a>
+    </div>
+
+    <!-- Display uploaded certificates in a Bootstrap table -->
+    <h2>Uploaded Certificates</h2>
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Title</th>
+                <th>Type</th>
+                <th>Parent</th>
+                <th>Expires</th>
+                <th>Created</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for cert in certificates %}
+        <tr>
+            <td>{{ cert['title'] }}</td>
+            <td>{{ cert['type'] }}</td>
+            <td>
+                {% if cert['parent_cert_id'] %}
+                    {% set parent_cert = db.get(doc_id=cert['parent_cert_id']) %}
+                    {{ parent_cert['title'] }} ({{ parent_cert['type'] }})
+                {% else %}
+                    None
+                {% endif %}
+            </td>
+            <td>{{ cert['expiration_date'] }}</td>
+            <td>{{ cert['uploaded_at'] }}</td>
+            <td class="no-wrap"> <!-- Add the no-wrap class -->
+                <a href="{{ url_for('view_certificate', cert_id=cert.doc_id) }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-eye"></i>
+                </a>
+                <a href="{{ url_for('download_file', filename=cert['cert_filename']) }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-download"></i><span class="ml-1">Certificate</span>
+                </a>
+                <a href="{{ url_for('download_file', filename=cert['key_filename']) }}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-download"></i><span class="ml-1">Key</span>
+                </a>
+                <a href="{{ url_for('download_zip', cert_id=cert.doc_id) }}" class="btn btn-success btn-sm">
+                    <i class="fas fa-download"></i><span class="ml-1">ZIP</span>
+                </a>
+                <form action="{{ url_for('delete_certificate', cert_id=cert.doc_id) }}" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    
+<!-- Footer -->
+<footer class="text-center bg-secondary text-white py-2" style="font-size: 0.8rem;">
+    created 2024 by <a href="https://github.com/schbrongx/certmanager" target="_blank" class="text-white">schbrongx</a>
+</footer>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

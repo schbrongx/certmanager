@@ -1,0 +1,31 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment folder
+venv/
+env/
+.venv/
+.env/
+
+# Flask cache and logs
+instance/
+*.log
+*.pot
+*.pyc
+
+# Certificate and key files
+*.pem
+*.crt
+*.key
+
+# Folder where uploaded certificates/keys are stored
+uploads/*
+
+# Prevent certificates.json from being committed
+certificates.json
+
+# MacOS and Linux system files
+.DS_Store
+Thumbs.db

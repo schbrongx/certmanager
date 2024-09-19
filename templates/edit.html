@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Certificate and Key</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body class="container">
+
+    <h1 class="mt-4">Edit Certificate and Key</h1>
+
+    <!-- Flash messages for success or errors -->
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+    <div class="alert alert-info mt-3">
+        {% for message in messages %}
+        <p>{{ message }}</p>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Form for editing the certificate and key -->
+    <form action="{{ url_for('edit_certificate', cert_id=cert_data.doc_id) }}" method="POST" class="mt-4">
+        <!-- Title field -->
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" class="form-control" value="{{ cert_data['title'] }}">
+        </div>
+
+        <!-- Certificate Type selection -->
+        <div class="form-group">
+            <label for="cert_type">Certificate Type:</label>
+            <select name="cert_type" id="cert_type" class="form-control">
+                {% for type in cert_types %}
+                <option value="{{ type }}" {% if type == cert_data['type'] %}selected{% endif %}>{{ type }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Parent Certificate selection -->
+        <div class="form-group">
+            <label for="parent_cert_id">Parent Certificate:</label>
+            <select name="parent_cert_id" id="parent_cert_id" class="form-control">
+                <option value="">None</option>
+                {% for cert in parent_certs %}
+                <option value="{{ cert.doc_id }}" {% if cert.doc_id == cert_data['parent_cert_id'] %}selected{% endif %}>
+                    {{ cert.title }} ({{ cert.type }})
+                </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Certificate content textarea -->
+        <div class="form-group">
+            <label for="cert_content">Certificate:</label>
+            <textarea name="cert_content" id="cert_content" rows="10" class="form-control">{{ cert_content }}</textarea>
+        </div>
+
+        <!-- Private Key content textarea -->
+        <div class="form-group">
+            <label for="key_content">Private Key:</label>
+            <textarea name="key_content" id="key_content" rows="10" class="form-control">{{ key_content }}</textarea>
+        </div>
+
+        <!-- Submit button -->
+        <button type="submit" class="btn btn-warning">Save Changes</button>
+        <a href="{{ url_for('view_certificate', cert_id=cert_data.doc_id) }}" class="btn btn-secondary">Cancel</a>
+    </form>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

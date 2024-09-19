@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Certificate and Key</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- Your custom stylesheet -->
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+</head>
+
+<body class="container">
+
+    <h1 class="mt-4">View Certificate and Key</h1>
+
+    <!-- Actions section: buttons above the certificate info -->
+    <div class="my-4">
+        <a class="btn btn-primary" href="{{ url_for('download_file', filename=cert_data['cert_filename']) }}">
+            <i class="fas fa-download"></i> Certificate
+        </a>
+        <a class="btn btn-primary" href="{{ url_for('download_file', filename=cert_data['key_filename']) }}">
+            <i class="fas fa-download"></i> Private Key
+        </a>
+        <a class="btn btn-success" href="{{ url_for('download_zip', cert_id=cert_data.doc_id) }}">
+            <i class="fas fa-download"></i> ZIP
+        </a>
+        <a class="btn btn-warning" href="{{ url_for('edit_certificate', cert_id=cert_data.doc_id) }}">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a href="{{ url_for('index') }}" class="btn btn-secondary">Back to List</a>
+    </div>
+
+    <!-- Collapsible Basic Certificate Information Section -->
+    <details>
+        <summary class="font-weight-bold">Basic Certificate Information</summary>
+        <div class="certificate-info mt-2">
+            <div class="certificate-info-row">
+                <span>Version:</span> {{ cert_info['version'] }}
+            </div>
+            <div class="certificate-info-row">
+                <span>Issuer:</span> CN={{ cert_info['issuer']['CN'] }}, O={{ cert_info['issuer']['O'] }}, OU={{ cert_info['issuer']['OU'] }}, C={{ cert_info['issuer']['C'] }}
+            </div>
+            <div class="certificate-info-row">
+                <span>Subject:</span> CN={{ cert_info['subject']['CN'] }}, O={{ cert_info['subject']['O'] }}, OU={{ cert_info['subject']['OU'] }}, L={{ cert_info['subject']['L'] }}, S={{ cert_info['subject']['S'] }}, C={{ cert_info['subject']['C'] }}
+            </div>
+            <div class="certificate-info-row">
+                <span>Valid From:</span> {{ cert_info['valid_from'] }}
+            </div>
+            <div class="certificate-info-row">
+                <span>Valid To:</span> {{ cert_info['valid_to'] }}
+            </div>
+            <div class="certificate-info-row">
+                <span>Public Key:</span> {{ cert_info['public_key_algorithm'] }}({{ cert_info['public_key_length'] }} bits)
+            </div>
+
+            {% if cert_info['san'] %}
+                <div class="certificate-info-row">
+                    <span>Subject Alternative Names (SAN):</span> {{ cert_info['san']|join(', ') }}
+                </div>
+            {% else %}
+                <div class="certificate-info-row">
+                    <span>Subject Alternative Names (SAN):</span> Not Present
+                </div>
+            {% endif %}
+
+            <div class="certificate-info-row">
+                <span>Is CA:</span> {{ 'Yes' if cert_info['is_ca'] else 'No' }}
+            </div>
+
+            {% if cert_info['key_usage'] %}
+                <div class="certificate-info-row">
+                    <span>Key Usage:</span> 
+                    Digital Signature: {{ 'Yes' if cert_info['key_usage']['digital_signature'] else 'No' }}, 
+                    Key Encipherment: {{ 'Yes' if cert_info['key_usage']['key_encipherment'] else 'No' }},
+                    Key Cert Sign: {{ 'Yes' if cert_info['key_usage']['key_cert_sign'] else 'No' }},
+                    CRL Sign: {{ 'Yes' if cert_info['key_usage']['crl_sign'] else 'No' }}
+                </div>
+            {% else %}
+                <div class="certificate-info-row">
+                    <span>Key Usage:</span> Not Present
+                </div>
+            {% endif %}
+        </div>
+    </details>
+
+    <!-- Certificate section -->
+    <h2 class="mt-4">
+        Certificate
+        <!-- Copy Button for Certificate -->
+        <button class="btn btn-sm btn-outline-secondary" id="copy-cert-btn"
+            onclick="copyToClipboard('cert_content', 'copy-cert-btn')">
+            <i class="fas fa-copy"></i>
+        </button>
+    </h2>
+    <pre class="border p-2" id="cert_content">{{ cert_content }}</pre>
+
+    <!-- Private Key section -->
+    <h2 class="mt-4">
+        Private Key
+        <!-- Copy Button for Private Key -->
+        <button class="btn btn-sm btn-outline-secondary" id="copy-key-btn"
+            onclick="copyToClipboard('key_content', 'copy-key-btn')">
+            <i class="fas fa-copy"></i>
+        </button>
+    </h2>
+    <pre class="border p-2" id="key_content">{{ key_content }}</pre>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script to handle clipboard copy and icon change -->
+    <script>
+        function copyToClipboard(elementId, buttonId) {
+            // Get the text content to be copied
+            var content = document.getElementById(elementId).innerText;
+
+            // Create a temporary textarea element to copy the content
+            var tempInput = document.createElement("textarea");
+            tempInput.value = content;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempInput);
+
+            // Get the button and icon elements
+            var button = document.getElementById(buttonId);
+            var icon = button.querySelector("i");
+
+            // Change the icon to checkmark
+            icon.classList.remove("fa-copy");
+            icon.classList.add("fa-check");
+
+            // After 3 seconds, change the icon back to copy
+            setTimeout(function () {
+                icon.classList.remove("fa-check");
+                icon.classList.add("fa-copy");
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>
