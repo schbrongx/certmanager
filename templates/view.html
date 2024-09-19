@@ -1,20 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Certificate and Key</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome CSS for icons -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <!-- Your custom stylesheet -->
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-</head>
+{% block title %}Upload New Certificate{% endblock %}
 
-<body class="container">
-
+{% block content %}
     <h1 class="mt-4">View Certificate and Key</h1>
 
     <!-- Actions section: buttons above the certificate info -->
@@ -109,10 +97,6 @@
     </h2>
     <pre class="border p-2" id="key_content">{{ key_content }}</pre>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-
     <!-- Script to handle clipboard copy and icon change -->
     <script>
         function copyToClipboard(elementId, buttonId) {
@@ -142,6 +126,4 @@
             }, 3000);
         }
     </script>
-</body>
-
-</html>
+{% endblock %}
