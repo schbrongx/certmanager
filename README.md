@@ -128,4 +128,4 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 
 ## Copyright
 
-© 2024 Thomas Pesendorfer. All rights reserved.
+© 2024 schbrongx. All rights reserved.
